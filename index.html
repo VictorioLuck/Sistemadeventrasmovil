@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistema de Ventas Móvil - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fdba74 100%);
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.98); 
+            border-radius: 24px; 
+            padding: 40px 32px; 
+            width: 100%; 
+            max-width: 420px; 
+            box-shadow: 0 20px 60px -10px rgba(249, 115, 22, 0.3);
+            margin: auto;
+        }
+
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 32px 24px;
+                border-radius: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .glass-card {
+                padding: 28px 20px;
+            }
+        }
+
+        .input-field { 
+            width: 100%; 
+            height: 56px; 
+            background: #f8fafc; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 16px; 
+            padding: 0 16px 0 48px; 
+            font-size: 16px; 
+            margin-bottom: 16px; 
+            transition: all 0.2s; 
+        }
+        .input-field:focus { 
+            border-color: #f97316; 
+            outline: none; 
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15); 
+        }
+        
+        .input-wrapper { position: relative; }
+        
+        .logo-container {
+            background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+            width: 90px;
+            height: 90px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 12px 30px -5px rgba(249, 115, 22, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .logo-container {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        .input-icon { 
+            position: absolute; 
+            left: 16px; 
+            top: 20px; 
+            color: #9ca3af; 
+        }
+        
+        .btn-primary { 
+            width: 100%; 
+            height: 56px; 
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); 
+            border-radius: 16px; 
+            color: white; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 8px 20px -5px rgba(249, 115, 22, 0.4);
+        }
+        
+        .error-message { 
+            display: none; 
+            background: #fef2f2; 
+            color: #dc2626; 
+            padding: 12px; 
+            border-radius: 12px; 
+            margin-top: 16px; 
+            font-size: 14px; 
+            text-align: center; 
+        }
+        .error-message.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <div class="text-center mb-6">
+            <!-- Icono de bolsa de compras/ventas anaranjada -->
+            <div class="logo-container">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-black text-gray-900 uppercase tracking-tight">Sistema de Ventas</h1>
+            <p class="text-sm text-orange-500 font-bold uppercase tracking-widest mt-1">Móvil</p>
+        </div>
+
+        <form onsubmit="event.preventDefault(); intentarLogin();">
+            <div class="input-wrapper">
+                <div class="input-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
+                    </svg>
+                </div>
+                <input type="email" id="email" class="input-field" placeholder="Correo electrónico" required>
+            </div>
+
+            <div class="input-wrapper">
+                <div class="input-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <input type="password" id="password" class="input-field" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" id="btnLogin" class="btn-primary">Ingresar</button>
+        </form>
+
+        <div id="errorMsg" class="error-message"></div>
+    </div>
+
+    <script>
+        // 1. CONFIGURACIÓN DE FIREBASE (Reemplaza con tus datos reales)
+        const firebaseConfig = {
+            // Reemplaza "TU_API_KEY" con el API Key de tu proyecto Firebase.
+            apiKey: "AIzaSyCardcjcK8SeU6TtC0FSZ3RfLKXlXlu4kE", 
+            authDomain: "sistema-vetas-moviles.firebaseapp.com",
+            projectId: "sistema-vetas-moviles",
+            storageBucket: "sistema-vetas-moviles.appspot.com",
+            messagingSenderId: "333307115100",
+            // Reemplaza "TU_APP_ID" con el App ID de tu aplicación web en Firebase.
+            appId: "1:333307115100:web:2910d61ef8a895a5855899" 
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        async function intentarLogin() {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMsg');
+            const btn = document.getElementById('btnLogin');
+
+            // Limpiar errores previos
+            errorDiv.classList.remove('show');
+            btn.innerText = "Cargando...";
+            btn.disabled = true;
+
+            try {
+                // Intento de autenticación con Firebase
+                await auth.signInWithEmailAndPassword(email, pass);
+
+                // Lógica de redirección basada en los correos solicitados
+                if (email === "moralesvictor2014@gmail.com") {
+                    window.location.href = "screen_administrador.html";
+                } else if (email === "moralesvictor2014@outlook.com") {
+                    window.location.href = "screen_encargado.html";
+                } else {
+                    // Si el correo es válido en Firebase pero no es ninguno de los dos
+                    errorDiv.innerText = "Usuario no autorizado para este sistema.";
+                    errorDiv.classList.add('show');
+                    auth.signOut();
+                }
+
+            } catch (error) {
+                console.error(error);
+                errorDiv.innerText = "Correo o contraseña incorrectos.";
+                errorDiv.classList.add('show');
+                if (navigator.vibrate) navigator.vibrate(50);
+            } finally {
+                btn.innerText = "Ingresar";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
